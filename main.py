@@ -14,7 +14,7 @@ KEYWORDS = ["IT아웃소싱", "MSP", "클라우드 운영전환", "LG CNS", "SK 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 EMAIL_SENDER = os.environ.get("EMAIL_SENDER")
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD") 
-EMAIL_RECEIVER = "본인이메일@gmail.com" # ★여기에 메일을 받을 주소를 다시 적어주세요!★
+EMAIL_RECEIVER = "hansu814.ryu@samsung.com"
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
