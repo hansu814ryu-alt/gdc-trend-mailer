@@ -30,7 +30,6 @@ def get_news(keywords):
 def generate_insights(news_list):
     news_text = "\n".join([f"- {news['title']} ({news['link']})" for news in news_list])
     
-    # AI에게 링크 생성을 강제하는 엄격한 규칙을 추가했습니다.
     prompt = f"""
     당신은 GDC 사업 담당자입니다. 다음 수집된 기사들을 분석하여 아래 2가지 섹션의 HTML 코드를 작성해주세요.
 
@@ -100,12 +99,14 @@ def generate_insights(news_list):
         model='gemini-2.5-flash',
         contents=prompt
     )
-    clean_html = response.text.replace("```html", "").replace("```", "").strip()
+    clean_html = response.text.replace("
+```html", "").replace("```", "").strip()
     return clean_html
 
 def send_email(insights_html):
     today = datetime.now().strftime("%Y-%m-%d")
     
+    # ▼ 이 아래의 쌍따옴표 3개(""")가 빠지면 에러가 납니다!
     html_content = f"""
     <html>
     <head>
@@ -113,4 +114,35 @@ def send_email(insights_html):
     </head>
     <body style="font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; color: #333; line-height: 1.5; padding: 20px; max-width: 900px; margin: 0 auto;">
         
-        <h2 style="font-size: 20px; border-bottom: 2px solid #333; padding-bottom
+        <h2 style="font-size: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
+            📄 GDC & ITO 트렌드 뉴스레터 ({today})
+        </h2>
+        
+        {insights_html}
+        
+        <h3 style="font-size: 16px; margin-bottom: 10px;">🎯 3. 경쟁사 및 외국인 IT 인력 채용 동향</h3>
+        <ul style="font-size: 13px; list-style-type: circle; padding-left: 20px; line-height: 1.8;">
+            <li><b>SK AX:</b> <a href="[https://www.google.com/search?q=SK+AX+%EB%B2%A0%ED%8A%B8%EB%82%A8+%EC%B1%84%EC%9A%A9](https://www.google.com/search?q=SK+AX+%EB%B2%A0%ED%8A%B8%EB%82%A8+%EC%B1%84%EC%9A%A9)" target="_blank" style="color: #0056b3; text-decoration: underline;">글로벌 사업 파트 - 베트남 거점 BSE (Bridge Software Engineer) 채용</a></li>
+            <li><b>LG CNS:</b> <a href="[https://www.google.com/search?q=LG+CNS+%EC%99%B8%EA%B5%AD%EC%9D%B8+%EC%B1%84%EC%9A%A9](https://www.google.com/search?q=LG+CNS+%EC%99%B8%EA%B5%AD%EC%9D%B8+%EC%B1%84%EC%9A%A9)" target="_blank" style="color: #0056b3; text-decoration: underline;">클라우드/MSP 아키텍트 (외국인 지원 가능/F-2, F-5 비자 우대)</a></li>
+            <li><b>FPT Korea:</b> <a href="[https://www.google.com/search?q=FPT+Korea+%EC%B1%84%EC%9A%A9](https://www.google.com/search?q=FPT+Korea+%EC%B1%84%EC%9A%A9)" target="_blank" style="color: #0056b3; text-decoration: underline;">한국 엔터프라이즈 영업 담당자 (베트남어 능통자 우대)</a></li>
+        </ul>
+        
+    </body>
+    </html>
+    """
+    # ▲ 여기까지 잘 닫혀 있어야 합니다!
+    
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = f"[Daily GDC Insight] 글로벌/국내 ITO 트렌드 리포트 ({today})"
+    msg['From'] = EMAIL_SENDER
+    msg['To'] = EMAIL_RECEIVER
+    msg.attach(MIMEText(html_content, 'html'))
+    
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+        server.login(EMAIL_SENDER, EMAIL_PASSWORD)
+        server.sendmail(EMAIL_SENDER, EMAIL_RECEIVER, msg.as_string())
+
+if __name__ == "__main__":
+    news_data = get_news(KEYWORDS)
+    insights = generate_insights(news_data)
+    send_email(insights)
