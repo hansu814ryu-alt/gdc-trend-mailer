@@ -36,7 +36,7 @@ def generate_insights(news_list):
     
     # 최신 패키지에 맞춘 코드 호출 방식 변경
     response = client.models.generate_content(
-        model='gemini-1.5-flash',
+        model='gemini-2.5-flash',
         contents=prompt
     )
     return response.text
