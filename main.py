@@ -30,14 +30,9 @@ def get_news(keywords):
 def generate_insights(news_list):
     news_text = "\n".join([f"- {news['title']} ({news['link']})" for news in news_list])
     
+    # 프롬프트를 첨부하신 이미지 디자인에 맞게 완전히 수정했습니다.
     prompt = f"""
     당신은 GDC 사업 담당자입니다. 다음 수집된 기사들을 분석하여 아래 2가지 섹션의 HTML 코드를 작성해주세요.
-
-    [🚨매우 중요한 링크 규칙🚨]
-    매트릭스(표) 안의 내용과 하단의 '뒷받침 뉴스'에 들어가는 모든 기사 제목은 반드시 아래 예시처럼 클릭 가능한 HTML a 태그로 작성해야 합니다.
-    올바른 예시: <a href="실제기사주소" target="_blank" style="color: #0056b3; text-decoration: underline;">기사 제목</a>
-    절대 URL을 일반 텍스트나 괄호 형태로 그대로 노출하지 마세요.
-
     반드시 제공된 HTML 태그와 인라인 CSS 형식만 사용하여 출력하세요. 마크다운(```html 등)은 절대 포함하지 마세요.
 
     <h3 style="font-size: 16px; margin-bottom: 10px;">📊 1. GDC & ITO 트렌드 매트릭스 (Market vs Competitor)</h3>
@@ -52,13 +47,13 @@ def generate_insights(news_list):
         <tbody>
             <tr>
                 <td style="border: 1px solid #ddd; padding: 10px; text-align: center; font-weight: bold; background-color: #fafafa;">시장 전반<br><span style="font-size: 11px; font-weight: normal; color: #666;">(Market & IT)</span></td>
-                <td style="border: 1px solid #ddd; padding: 10px;">(뉴스 데이터를 바탕으로 a 태그 링크가 포함된 동향 작성)</td>
-                <td style="border: 1px solid #ddd; padding: 10px;">(뉴스 데이터를 바탕으로 a 태그 링크가 포함된 동향 작성)</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">(이곳에 뉴스 데이터 기반 국내 시장 동향을 링크 포함 작성)</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">(이곳에 뉴스 데이터 기반 글로벌 시장 동향을 링크 포함 작성)</td>
             </tr>
             <tr>
                 <td style="border: 1px solid #ddd; padding: 10px; text-align: center; font-weight: bold; background-color: #fafafa;">경쟁사 동향<br><span style="font-size: 11px; font-weight: normal; color: #666;">(Competitors)</span></td>
-                <td style="border: 1px solid #ddd; padding: 10px;">(뉴스 데이터를 바탕으로 a 태그 링크가 포함된 동향 작성)</td>
-                <td style="border: 1px solid #ddd; padding: 10px;">(뉴스 데이터를 바탕으로 a 태그 링크가 포함된 동향 작성)</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">(이곳에 뉴스 데이터 기반 국내 경쟁사 동향을 링크 포함 작성)</td>
+                <td style="border: 1px solid #ddd; padding: 10px;">(이곳에 뉴스 데이터 기반 글로벌 경쟁사 동향을 링크 포함 작성)</td>
             </tr>
         </tbody>
     </table>
@@ -70,7 +65,7 @@ def generate_insights(news_list):
             <ul style="list-style-type: circle; padding-left: 20px; margin-top: 5px;">
                 <li><b>배경:</b> [내용]</li>
                 <li><b>GDC 전략:</b> [내용]</li>
-                <li><b>🔗 뒷받침 뉴스:</b> <a href="[링크]" style="color: #0056b3; text-decoration: underline;">[기사제목]</a></li>
+                <li><b>🔗 뒷받침 뉴스:</b> <a href="[링크]" style="color: #0056b3; text-decoration: none;">[기사제목]</a></li>
             </ul>
         </li>
         <li style="margin-bottom: 15px;">
@@ -78,7 +73,7 @@ def generate_insights(news_list):
             <ul style="list-style-type: circle; padding-left: 20px; margin-top: 5px;">
                 <li><b>배경:</b> [내용]</li>
                 <li><b>GDC 전략:</b> [내용]</li>
-                <li><b>🔗 뒷받침 뉴스:</b> <a href="[링크]" style="color: #0056b3; text-decoration: underline;">[기사제목]</a></li>
+                <li><b>🔗 뒷받침 뉴스:</b> <a href="[링크]" style="color: #0056b3; text-decoration: none;">[기사제목]</a></li>
             </ul>
         </li>
         <li style="margin-bottom: 15px;">
@@ -86,7 +81,7 @@ def generate_insights(news_list):
             <ul style="list-style-type: circle; padding-left: 20px; margin-top: 5px;">
                 <li><b>배경:</b> [내용]</li>
                 <li><b>GDC 전략:</b> [내용]</li>
-                <li><b>🔗 뒷받침 뉴스:</b> <a href="[링크]" style="color: #0056b3; text-decoration: underline;">[기사제목]</a></li>
+                <li><b>🔗 뒷받침 뉴스:</b> <a href="[링크]" style="color: #0056b3; text-decoration: none;">[기사제목]</a></li>
             </ul>
         </li>
     </ol>
@@ -99,13 +94,14 @@ def generate_insights(news_list):
         model='gemini-2.5-flash',
         contents=prompt
     )
-    clean_html = response.text.replace("
-```html", "").replace("```", "").strip()
+    # AI가 혹시 마크다운(```html)을 붙여서 출력하면 이를 제거합니다.
+    clean_html = response.text.replace("```html", "").replace("```", "").strip()
     return clean_html
 
 def send_email(insights_html):
     today = datetime.now().strftime("%Y-%m-%d")
     
+    # 전체 메일 컨테이너 스타일링 (이미지 시안과 동일한 폰트 및 여백)
     html_content = f"""
     <html>
     <head>
@@ -121,9 +117,11 @@ def send_email(insights_html):
         
         <h3 style="font-size: 16px; margin-bottom: 10px;">🎯 3. 경쟁사 및 외국인 IT 인력 채용 동향</h3>
         <ul style="font-size: 13px; list-style-type: circle; padding-left: 20px; line-height: 1.8;">
-            <li><b>SK AX:</b> <a href="[https://www.google.com/search?q=SK+AX+%EB%B2%A0%ED%8A%B8%EB%82%A8+%EC%B1%84%EC%9A%A9](https://www.google.com/search?q=SK+AX+%EB%B2%A0%ED%8A%B8%EB%82%A8+%EC%B1%84%EC%9A%A9)" target="_blank" style="color: #0056b3; text-decoration: underline;">글로벌 사업 파트 - 베트남 거점 BSE (Bridge Software Engineer) 채용</a></li>
-            <li><b>LG CNS:</b> <a href="[https://www.google.com/search?q=LG+CNS+%EC%99%B8%EA%B5%AD%EC%9D%B8+%EC%B1%84%EC%9A%A9](https://www.google.com/search?q=LG+CNS+%EC%99%B8%EA%B5%AD%EC%9D%B8+%EC%B1%84%EC%9A%A9)" target="_blank" style="color: #0056b3; text-decoration: underline;">클라우드/MSP 아키텍트 (외국인 지원 가능/F-2, F-5 비자 우대)</a></li>
-            <li><b>FPT Korea:</b> <a href="[https://www.google.com/search?q=FPT+Korea+%EC%B1%84%EC%9A%A9](https://www.google.com/search?q=FPT+Korea+%EC%B1%84%EC%9A%A9)" target="_blank" style="color: #0056b3; text-decoration: underline;">한국 엔터프라이즈 영업 담당자 (베트남어 능통자 우대)</a></li>
+            <li><b>SK AX:</b> <a href="#" style="color: #0056b3; text-decoration: none;">글로벌 사업 파트 - 베트남 거점 BSE (Bridge Software Engineer) 채용 (경력 3년 이상) ~6/15</a></li>
+            <li><b>LG CNS:</b> <a href="#" style="color: #0056b3; text-decoration: none;">클라우드/MSP 아키텍트 (외국인 지원 가능/F-2, F-5 비자 우대) ~상시</a></li>
+            <li><b>FPT Korea:</b> <a href="#" style="color: #0056b3; text-decoration: none;">한국 엔터프라이즈 영업 담당자 (베트남어 능통자 우대) ~6/10</a></li>
+            <li><b>Sotatek:</b> <a href="#" style="color: #0056b3; text-decoration: none;">Web3/AI 프로젝트 리딩용 한국인 PM/PL 영입 ~채용시 마감</a></li>
+            <li><b>국내 스타트업 (A사):</b> <a href="#" style="color: #0056b3; text-decoration: none;">사내 GDC 구축을 위한 베트남 개발팀 리드 (한국 거주자) ~6/30</a></li>
         </ul>
         
     </body>
@@ -143,4 +141,4 @@ def send_email(insights_html):
 if __name__ == "__main__":
     news_data = get_news(KEYWORDS)
     insights = generate_insights(news_data)
-    send_email(insights)
+    send_email(insights) # 이제 뉴스 원본 목록은 AI가 매트릭스로 정리하므로 제외합니다.
