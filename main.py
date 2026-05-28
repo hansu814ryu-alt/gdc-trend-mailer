@@ -106,7 +106,6 @@ def generate_insights(news_list):
 def send_email(insights_html):
     today = datetime.now().strftime("%Y-%m-%d")
     
-    # ▼ 이 아래의 쌍따옴표 3개(""")가 빠지면 에러가 납니다!
     html_content = f"""
     <html>
     <head>
@@ -130,7 +129,6 @@ def send_email(insights_html):
     </body>
     </html>
     """
-    # ▲ 여기까지 잘 닫혀 있어야 합니다!
     
     msg = MIMEMultipart('alternative')
     msg['Subject'] = f"[Daily GDC Insight] 글로벌/국내 ITO 트렌드 리포트 ({today})"
