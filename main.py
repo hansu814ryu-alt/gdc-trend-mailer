@@ -14,7 +14,7 @@ KEYWORDS = ["IT아웃소싱", "MSP", "클라우드 운영전환", "LG CNS", "SK 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 EMAIL_SENDER = os.environ.get("EMAIL_SENDER")
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD") 
-EMAIL_RECEIVER = hansu814.ryu@samsung.com,jihoon33.kim@samsung.com,glassman@samsung.comm,chaneast.kim@samsung.com,bangz0@samsung.com,tjsong@samsung.com,hj71.song@samsung.com,yoonsj@samsung.com,heeseon.yoon@samsung.com,laguna@samsung.com,th.jeong@samsung.com,jackie.chung@samsung.com,ally.chae@samsung.com,yoonseok@samsung.com,eunji0313.choi@samsung.com
+EMAIL_RECEIVER = "hansu814.ryu@samsung.com"
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
