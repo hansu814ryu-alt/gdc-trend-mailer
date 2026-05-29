@@ -38,7 +38,7 @@ def generate_insights(news_list):
     올바른 예시: <a href="실제기사주소" target="_blank" style="color: #0056b3; text-decoration: underline;">기사 제목</a>
     절대 URL을 일반 텍스트나 괄호 형태로 그대로 노출하지 마세요.
 
-    반드시 제공된 HTML 태그와 인라인 CSS 형식만 사용하여 출력하세요. 마크다운(```html 등)은 절대 포함하지 마세요.
+    반드시 제공된 HTML 태그와 인라인 CSS 형식만 사용하여 출력하세요. 마크다운 코드 블록 형태는 절대 포함하지 마세요.
 
     <h3 style="font-size: 16px; margin-bottom: 10px;">📊 1. GDC & ITO 트렌드 매트릭스 (Market vs Competitor)</h3>
     <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 30px;">
@@ -100,11 +100,10 @@ def generate_insights(news_list):
         contents=prompt
     )
     
-    # 에러가 났던 긴 문장을 절대 잘리지 않도록 안전하게 한 줄씩 분리했습니다.
+    # 백틱 기호 대신 유니코드를 활용하여 줄바꿈 및 복사 오류를 완벽히 차단했습니다.
     ai_text = response.text
-    ai_text = ai_text.replace("
-```html", "")
-    ai_text = ai_text.replace("```", "")
+    ai_text = ai_text.replace("\x60\x60\x60html", "")
+    ai_text = ai_text.replace("\x60\x60\x60", "")
     clean_html = ai_text.strip()
     
     return clean_html
@@ -127,12 +126,12 @@ def send_email(insights_html):
         
         <h3 style="font-size: 16px; margin-bottom: 10px;">🎯 3. 경쟁사 및 외국인 IT 인력 채용 동향 (Direct Sources)</h3>
         <ul style="font-size: 13px; list-style-type: circle; padding-left: 20px; line-height: 1.8;">
-            <li><b>SK 그룹 (SK AX/C&C):</b> <a href="[https://www.skcareers.com/](https://www.skcareers.com/)" target="_blank" style="color: #0056b3; text-decoration: underline;">SK Careers 공식 채용 포털 (글로벌/IT 인력) 조회</a></li>
-            <li><b>LG CNS:</b> <a href="[https://careers.lg.com/main/Index.rpi](https://careers.lg.com/main/Index.rpi)" target="_blank" style="color: #0056b3; text-decoration: underline;">LG 그룹 공식 채용 포털 (클라우드/MSP/글로벌) 조회</a></li>
-            <li><b>FPT Software Korea:</b> <a href="[https://fptsoftware.com/careers](https://fptsoftware.com/careers)" target="_blank" style="color: #0056b3; text-decoration: underline;">FPT 글로벌 공식 채용 사이트 조회</a></li>
-            <li><b>Sotatek:</b> <a href="[https://www.sotatek.com/careers/](https://www.sotatek.com/careers/)" target="_blank" style="color: #0056b3; text-decoration: underline;">Sotatek 글로벌 채용 페이지 (Web3/AI) 조회</a></li>
-            <li><b>원티드 (국내/외국인 IT 인력):</b> <a href="[https://www.wanted.co.kr/search?query=%EB%B2%A0%ED%8A%B8%EB%82%A8%20%EA%B0%9C%EB%B0%9C%EC%9E%90](https://www.wanted.co.kr/search?query=%EB%B2%A0%ED%8A%B8%EB%82%A8%20%EA%B0%9C%EB%B0%9C%EC%9E%90)" target="_blank" style="color: #0056b3; text-decoration: underline;">'베트남 개발자' 관련 실시간 채용공고 검색 결과 (스타트업/중견)</a></li>
-            <li><b>링크드인 (글로벌 GDC/Offshore):</b> <a href="[https://www.linkedin.com/jobs/search/?keywords=GDC%20Korea](https://www.linkedin.com/jobs/search/?keywords=GDC%20Korea)" target="_blank" style="color: #0056b3; text-decoration: underline;">GDC 코리아 관련 글로벌 핵심 인재 영입 실시간 공고 확인</a></li>
+            <li><b>SK 그룹 (SK AX/C&C):</b> <a href="https://www.skcareers.com/" target="_blank" style="color: #0056b3; text-decoration: underline;">SK Careers 공식 채용 포털 (글로벌/IT 인력) 조회</a></li>
+            <li><b>LG CNS:</b> <a href="https://careers.lg.com/main/Index.rpi" target="_blank" style="color: #0056b3; text-decoration: underline;">LG 그룹 공식 채용 포털 (클라우드/MSP/글로벌) 조회</a></li>
+            <li><b>FPT Software Korea:</b> <a href="https://fptsoftware.com/careers" target="_blank" style="color: #0056b3; text-decoration: underline;">FPT 글로벌 공식 채용 사이트 조회</a></li>
+            <li><b>Sotatek:</b> <a href="https://www.sotatek.com/careers/" target="_blank" style="color: #0056b3; text-decoration: underline;">Sotatek 글로벌 채용 페이지 (Web3/AI) 조회</a></li>
+            <li><b>원티드 (국내/외국인 IT 인력):</b> <a href="https://www.wanted.co.kr/search?query=%EB%B2%A0%ED%8A%B8%EB%82%A8%20%EA%B0%9C%EB%B0%9C%EC%9E%90" target="_blank" style="color: #0056b3; text-decoration: underline;">'베트남 개발자' 관련 실시간 채용공고 검색 결과 (스타트업/중견)</a></li>
+            <li><b>링크드인 (글로벌 GDC/Offshore):</b> <a href="https://www.linkedin.com/jobs/search/?keywords=GDC%20Korea" target="_blank" style="color: #0056b3; text-decoration: underline;">GDC 코리아 관련 글로벌 핵심 인재 영입 실시간 공고 확인</a></li>
         </ul>
         
     </body>
