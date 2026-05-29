@@ -99,8 +99,14 @@ def generate_insights(news_list):
         model='gemini-2.5-flash',
         contents=prompt
     )
-    clean_html = response.text.replace("
-```html", "").replace("```", "").strip()
+    
+    # 에러가 났던 긴 문장을 절대 잘리지 않도록 안전하게 한 줄씩 분리했습니다.
+    ai_text = response.text
+    ai_text = ai_text.replace("
+```html", "")
+    ai_text = ai_text.replace("```", "")
+    clean_html = ai_text.strip()
+    
     return clean_html
 
 def send_email(insights_html):
